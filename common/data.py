@@ -5,27 +5,23 @@ import pandas as pd
 import pickle
 import logging
 from skafossdk import DataSourceType, Skafos
-from s3fs.core import S3FileSystem  # Fix this
+from s3fs.core import S3FileSystem  
 from .schema import FEATURE_SCHEMA, SCORING_SCHEMA
 
 
 # Data access functions
 
-S3_BUCKET = "skafos.demo.tmsw"
+#S3_BUCKET = "skafos.demo.tmsw"
 TRAINING_FILE_NAME = "training_data/WA_Fn-UseC_-Telco-Customer-Churn_train.csv"
 SCORING_FILE_NAME = "raw_data/WA_Fn-UseC_-Telco-Customer-Churn_score.csv"
 CHURN_MODEL_SCORES = "churn_model_scores/scores.csv"
 FILE_SCHEMA = "schema/WA_Fn-UseC_-Telco-Customer-Churn_schema.csv"
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-KEYSPACE = "df2c4ad56cd5d1e5bcce8993"
+#KEYSPACE = "df2c4ad56cd5d1e5bcce8993"
 
 
 #-------------------Data Access Functions -----------------------
-
-# Drop table if it exists at the beginning of the build-model-job
-def drop_table(ska):
-    ska.engine.query("DROP TABLE IF EXISTS demo_columns").result()
 
 # Get input data from S3 -- specify training or scoring. 
 def get_data(csvCols, whichData):  
@@ -105,7 +101,7 @@ def get_model(ska, dataset_id, modelType):
 def dummify_columns(xVars, features):
     for column in features:
         if (xVars[column].dtype == 'object'):
-            ### DIRTY HACK
+            ### HACK TO HANDLE DIRTY DATA IF TOTAL CHARGES IS SELECTED.
             if column != 'total_charges':
                 dvars = pd.get_dummies(xVars[column], prefix=xVars[column].name)
                 # Remove one column from dvars to handle multi-collinearity

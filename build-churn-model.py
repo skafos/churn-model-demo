@@ -1,5 +1,6 @@
 from skafossdk import *
 import logging
+import uuid
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -23,12 +24,9 @@ from common.modeling import *
 
 ska = Skafos()
 
-# Drop table if it exists already
-drop_table(ska)
-
-#Grab relevant columns from those selected from Tableau and written to Cassandra tables  
-dataset_id, features = get_features(ska)
-ska.log(f"List of features selected by user: {features}", labels=["features"], level=logging.INFO)
+#Grab relevant features from those selected in the modeling.py file.   
+features = MODEL_INPUT_FEATURES
+ska.log(f"List of model input: {features}", labels=["features"], level=logging.INFO)
 
 csvCols = features.copy()
 csvCols.append(TARGET_VARIABLE) # Break into features, label, ID
@@ -54,6 +52,8 @@ model_accuracy = accuracy_score(y_test, y_preds)
 model_auc = roc_auc_score(y_test, y_scores)
 ska.log(f"Training accuracy: {model_accuracy} \n ROC_AUC: {model_auc}", 
         labels=["Metrics"], level=logging.INFO)
+
+dataset_id = str(uuid.uuid4())
 
 # output model results as pkl
 save_model(ska, dataset_id, fittedModel, MODEL_TYPE)
