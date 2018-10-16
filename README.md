@@ -1,4 +1,14 @@
-## Churn Model Demo with Tableau Selected Features
+## Churn Model Demo using Skafos
 
-The purpose of this demo is to demonstrate model rebuild after selecting new features from a Tableau dashboard and pushing them to Skafos. This is likely to be applicable across a variety of BI tools 
+The purpose of this demo is to highlight the utility of Skafos, Metis Machine's data science operationalization and delivery platform, for building a predictive model and subsequently scoring new users. 
+
+The example data for this article is freely available and can be found here: 
+
+* https://www.ibm.com/communities/analytics/watson-analytics-blog/predictive-insights-in-the-telco-customer-churn-data-set/
+
+or here: 
+
+* https://www.kaggle.com/blastchar/telco-customer-churn/home
+
+
 
