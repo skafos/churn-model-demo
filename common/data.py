@@ -30,32 +30,13 @@ def get_data(csvCols, whichData):
         path = f's3://{S3_BUCKET}/{TRAINING_FILE_NAME}'
     elif whichData == "scoring":
         path = f's3://{S3_BUCKET}/{SCORING_FILE_NAME}'
-    #PUT ERROR CATCHING HERE FOR WRONGLY SPECIFIED DATA
+    # PUT ERROR CATCHING HERE FOR ERRORS IN INPUT FILES
+    # Read in .csv file, but only for specified columns. 
     df = pd.read_csv(s3.open(f'{path}', mode='rb'), usecols=csvCols)
     for c in csvCols:
         if (df[c].dtype == 'object'):
             df = df[df[c].str.match(" ") == False]
     return df
-
-def get_features(ska):
-    #Create view and grab features from Cassandra
-    view = "demo_columns"
-    table_options = {
-            "keyspace": KEYSPACE,
-            "table": "demo_columns"
-            }
-    data_source = DataSourceType.Cassandra
-    cv = ska.engine.create_view(view, table_options, data_source).result()
-    print(f"ska.engine.create_view: {cv}\n", flush=True)
-    rows = ska.engine.query(f"select dataset_id, column FROM demo_columns \
-                     where dataset_id in (select MAX(dataset_id) FROM \
-                     demo_columns)").result().get('data')
-    dataset_id = None
-    columns = []
-    for x in rows:
-        dataset_id = x.get('dataset_id')
-        columns.append(x.get('column'))
-    return dataset_id, columns # This is a little hacky, let's fix
 
 def save_scores(ska, scoring, location):
     # Save to Cassandra

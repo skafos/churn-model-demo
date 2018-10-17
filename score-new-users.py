@@ -9,17 +9,18 @@ from sklearn.metrics import accuracy_score, roc_auc_score
 from common.data import *
 from common.modeling import *
 
-# Grab latest data and model from S3
 
 ska = Skafos()
 
-#Grab relevant columns from those selected from Tableau and written to Cassandra tables  
-dataset_id, features = get_features(ska)
-ska.log(f"List of features selected by user: {features}", labels=["features"], level=logging.INFO)
+#Grab relevant features from those selected in the modeling.py file. 
+features = MODEL_INPUT_FEATURES
+ska.log(f"List of model input: {features}", labels=["features"], level=logging.INFO)
 
 csvCols = features.copy()
 csvCols.append(TARGET_VARIABLE) # Break into features, label, ID
 csvCols.insert(0, UNIQUE_ID)
+
+#TODO: Get dataset ID. 
 
 # Grab model
 fittedModel = get_model(ska, dataset_id, MODEL_TYPE)
