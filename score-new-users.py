@@ -1,5 +1,6 @@
 from skafossdk import *
 import logging
+import uuid
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -20,7 +21,8 @@ csvCols = features.copy()
 csvCols.append(TARGET_VARIABLE) # Break into features, label, ID
 csvCols.insert(0, UNIQUE_ID)
 
-#TODO: Get dataset ID. 
+#TODO: Get dataset ID from build-churn-model.py. Placeholder for now
+dataset_id = str(uuid.uuid4())
 
 # Grab model
 fittedModel = get_model(ska, dataset_id, MODEL_TYPE)
