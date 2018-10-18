@@ -21,7 +21,9 @@ S3_PRIVATE_BUCKET = "skafos.example.output.data"
 CHURN_MODEL_SCORES = "TelcoChurnData/churn_model_scores/scores.csv"
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-#KEYSPACE = "df2c4ad56cd5d1e5bcce8993"
+
+# Project Token
+KEYSPACE = "91633e3d419e23dc7a2da419"
 
 
 #-------------------Data Access Functions -----------------------
