@@ -7,7 +7,7 @@ SCORING_SCHEMA = {
     },
     "columns": {
         "customer_id": "text",
-        "dataset_id": "text",
+        "dataset_id": "bigint",
         "score": "float"
     }
 }

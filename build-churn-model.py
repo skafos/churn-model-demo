@@ -1,6 +1,6 @@
 from skafossdk import *
 import logging
-import uuid
+import random
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -54,7 +54,7 @@ ska.log(f"Training accuracy: {model_accuracy} \n ROC_AUC: {model_auc}",
         labels=["Metrics"], level=logging.INFO)
 
 # Unique dataset_id --> TODO: Increment by 1 as opposed to UUID.  
-dataset_id = str(uuid.uuid4())
+dataset_id = random.randint(1,100000000)
 
 # output model results as pkl
 save_model(ska, dataset_id, fittedModel, MODEL_TYPE)
