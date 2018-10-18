@@ -6,7 +6,7 @@ import pickle
 import logging
 from skafossdk import DataSourceType, Skafos
 from s3fs.core import S3FileSystem  
-from .schema import FEATURE_SCHEMA, SCORING_SCHEMA
+from .schema import SCORING_SCHEMA
 
 
 # Data access functions

@@ -1,15 +1,4 @@
 # Schema for grabbing columns and putting into Cassandra
-
-FEATURE_SCHEMA = {
-    "table_name": "demo_columns",
-    "options": {
-        "primary_key": ["dataset_id", "column"],
-    },
-    "columns": {
-        "dataset_id": "bigint",
-        "column": "text"
-    }
-}
     
 SCORING_SCHEMA = {
     "table_name": "scores",
@@ -18,7 +7,7 @@ SCORING_SCHEMA = {
     },
     "columns": {
         "customer_id": "text",
-        "dataset_id": "bigint",
+        "dataset_id": "text",
         "score": "float"
     }
 }
