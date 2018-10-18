@@ -11,11 +11,14 @@ from .schema import FEATURE_SCHEMA, SCORING_SCHEMA
 
 # Data access functions
 
-#S3_BUCKET = "skafos.demo.tmsw"
-TRAINING_FILE_NAME = "training_data/WA_Fn-UseC_-Telco-Customer-Churn_train.csv"
-SCORING_FILE_NAME = "raw_data/WA_Fn-UseC_-Telco-Customer-Churn_score.csv"
-CHURN_MODEL_SCORES = "churn_model_scores/scores.csv"
-FILE_SCHEMA = "schema/WA_Fn-UseC_-Telco-Customer-Churn_schema.csv"
+# Input data
+S3_BUCKET = "skafos.example.data"
+TRAINING_FILE_NAME = "TelcoChurnData/WA_Fn-UseC_-Telco-Customer-Churn_train.csv"
+SCORING_FILE_NAME = "TelcoChurnData/WA_Fn-UseC_-Telco-Customer-Churn_score.csv"
+
+# Output models and scores
+S3_PRIVATE_BUCKET = "skafos.example.output.data"
+CHURN_MODEL_SCORES = "TelcoChurnData/churn_model_scores/scores.csv"
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 #KEYSPACE = "df2c4ad56cd5d1e5bcce8993"
@@ -25,7 +28,7 @@ AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
 # Get input data from S3 -- specify training or scoring. 
 def get_data(csvCols, whichData):  
-    s3 = S3FileSystem(anon=False)
+    s3 = S3FileSystem(anon=True)
     if whichData == "training":
         path = f's3://{S3_BUCKET}/{TRAINING_FILE_NAME}'
     elif whichData == "scoring":
@@ -51,7 +54,7 @@ def save_scores(ska, scoring, location):
     if location=="both" or location=="S3":
         bytes_to_write = scoring.to_csv(None, index=False).encode()
         fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
-        with fs.open(f"s3://{S3_BUCKET}/{CHURN_MODEL_SCORES}", 'wb') as f:
+        with fs.open(f"s3://{S3_PRIVATE_BUCKET}/{CHURN_MODEL_SCORES}", 'wb') as f:
                 f.write(bytes_to_write)
         ska.log("Saving to S3", labels=["S3saving"], level=logging.INFO)
     
@@ -61,7 +64,7 @@ def save_model(ska, dataset_id, fittedModel, modelType):
     ska.log("Saving model to S3", labels=["S3saving"], level=logging.INFO)
     #fileName = f"dataset_id_{dataset_id}_{modelType}.pkl"
     fileName = f"{modelType}.pkl"
-    filePath = f"s3://{S3_BUCKET}/churn_models/{fileName}"
+    filePath = f"s3://{S3_PRIVATE_BUCKET}/churn_models/{fileName}"
     print(f"{filePath}", flush=True)
     fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
     with fs.open(filePath, 'wb') as f:
@@ -71,7 +74,7 @@ def get_model(ska, dataset_id, modelType):
     ska.log("Getting model from S3", labels=["S3fetching"], level=logging.INFO)
     #fileName = f"dataset_id_{dataset_id}_{modelType}.pkl"
     fileName = f"{modelType}.pkl"
-    filePath = f"s3://{S3_BUCKET}/churn_models/{fileName}"
+    filePath = f"s3://{S3_PRIVATE_BUCKET}/churn_models/{fileName}"
     print(f"{filePath}", flush=True)
     fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
     with fs.open(filePath, mode="rb") as f:
