@@ -62,10 +62,8 @@ def save_scores(ska, scoring, location):
     
             
 def save_model(ska, dataset_id, fittedModel, modelType):
-    # TODO: Need to put dataset_id back into file name. Ignoring for now.  
     ska.log("Saving model to S3", labels=["S3saving"], level=logging.INFO)
-    #fileName = f"dataset_id_{dataset_id}_{modelType}.pkl"
-    fileName = f"{modelType}.pkl"
+    fileName = f"dataset_id_{dataset_id}_{modelType}.pkl"
     filePath = f"s3://{S3_PRIVATE_BUCKET}/TelcoChurnData/churn_models/{fileName}"
     print(f"{filePath}", flush=True)
     fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
@@ -74,8 +72,7 @@ def save_model(ska, dataset_id, fittedModel, modelType):
 
 def get_model(ska, dataset_id, modelType):
     ska.log("Getting model from S3", labels=["S3fetching"], level=logging.INFO)
-    #fileName = f"dataset_id_{dataset_id}_{modelType}.pkl"
-    fileName = f"{modelType}.pkl"
+    fileName = f"dataset_id_{dataset_id}_{modelType}.pkl"
     filePath = f"s3://{S3_PRIVATE_BUCKET}/TelcoChurnData/churn_models/{fileName}"
     print(f"{filePath}", flush=True)
     fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)

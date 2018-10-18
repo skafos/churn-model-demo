@@ -53,8 +53,8 @@ model_auc = roc_auc_score(y_test, y_scores)
 ska.log(f"Training accuracy: {model_accuracy} \n ROC_AUC: {model_auc}", 
         labels=["Metrics"], level=logging.INFO)
 
-# Unique dataset_id --> TODO: Increment by 1 as opposed to UUID.  
-dataset_id = random.randint(1,100000000)
+# Unique dataset_id --> Defined in modeling.py  
+dataset_id = DATASET_ID
 
 # output model results as pkl
 save_model(ska, dataset_id, fittedModel, MODEL_TYPE)

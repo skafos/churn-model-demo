@@ -21,8 +21,8 @@ csvCols = features.copy()
 csvCols.append(TARGET_VARIABLE) # Break into features, label, ID
 csvCols.insert(0, UNIQUE_ID)
 
-#TODO: Get dataset ID from build-churn-model.py. Placeholder for now
-dataset_id = random.randint(1,100000000)
+#Explicitly defined in modeling.py
+dataset_id = DATASET_ID
 
 # Grab model
 fittedModel = get_model(ska, dataset_id, MODEL_TYPE)
