@@ -22,10 +22,10 @@ csvCols.append(TARGET_VARIABLE) # Break into features, label, ID
 csvCols.insert(0, UNIQUE_ID)
 
 #Explicitly defined in modeling.py
-dataset_id = DATASET_ID
+model_id = MODEL_ID
 
 # Grab model
-fittedModel = get_model(ska, dataset_id, MODEL_TYPE)
+fittedModel = get_model(ska, model_id, MODEL_TYPE)
 
 scoringData = get_data(csvCols, "scoring")
 xToScore = dummify_columns(scoringData[features], features)
@@ -41,7 +41,7 @@ ska.log(f"Scoring accuracy: {model_accuracy} \n ROC_AUC: {model_auc}",
 
 #Construct scoring output
 scoring = pd.DataFrame(data=scoringData[UNIQUE_ID], columns=[UNIQUE_ID])
-scoring['dataset_id'] = dataset_id
+scoring['model_id'] = model_id
 scoring['score'] = [p[1] for p in fittedModel.predict_proba(xToScore)]
 
 # output_model

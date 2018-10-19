@@ -3,11 +3,11 @@
 SCORING_SCHEMA = {
     "table_name": "scores",
     "options": {
-        "primary_key": ["dataset_id", "customer_id"],
+        "primary_key": ["model_id", "customer_id"],
     },
     "columns": {
         "customer_id": "text",
-        "dataset_id": "bigint",
+        "model_id": "bigint",
         "score": "float"
     }
 }

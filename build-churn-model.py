@@ -53,11 +53,11 @@ model_auc = roc_auc_score(y_test, y_scores)
 ska.log(f"Training accuracy: {model_accuracy} \n ROC_AUC: {model_auc}", 
         labels=["Metrics"], level=logging.INFO)
 
-# Unique dataset_id --> Defined in modeling.py  
-dataset_id = DATASET_ID
+# Unique model_id --> Defined in modeling.py  
+model_id = MODEL_ID
 
 # output model results as pkl
-save_model(ska, dataset_id, fittedModel, MODEL_TYPE)
+save_model(ska, model_id, fittedModel, MODEL_TYPE)
 ska.log(f"Model pickled and saved to S3", labels=["S3saving"], level=logging.INFO)
 
 
