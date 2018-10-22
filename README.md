@@ -87,7 +87,7 @@ In Steps 3 and 4 above, you initialized a Skafos project so you can run the clon
 
 To do this, navigate to the Settings page for your organization, click on _Installed GitHub Apps_ to add the Skafos app to this repository. Alternatively, if this repo is not part of an organization, navigate to your _Settings_ page, click on _Applications_, and install the Skafos app. 
 
-### Step 6: Modify the AWS Keys and Private S3 bucket
+### Step 7: Modify the AWS Keys and Private S3 bucket
 
 In [`common/data.py`](https://github.com/skafos/churn-model-demo/blob/master/common/data.py), the AWS information to retrieve input data and store output models and data is provided. The input S3 bucket and file names do not need to be modified; however, the [location of the output models and scores](https://github.com/skafos/churn-model-demo/blob/master/common/data.py#L19) will need to be updated in the code, as well as the specified keyspace.
 
@@ -97,11 +97,11 @@ To make these changes, do the following:
 2. You will need to provide Skafos with your `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` [via the command line](https://docs.metismachine.io/docs/usage#section-setting-environment-variables). `skafos env AWS_ACCESS_KEY_ID --set <key>` and `skafos env AWS_SECRET_ACCESS_KEY --set <key>` will do this. 
 3. Update the [`KEYSPACE`](https://github.com/skafos/churn-model-demo/blob/master/common/data.py#L26) to be the `project_token` that was generated with the `metis.config.yml` file. 
 
-### Step 7: Commit and Push All Code Changes to the github repo
+### Step 8: Commit and Push All Code Changes to the github repo
 
-In step 6, you generated several changes to `common/data.py.` These changes now need to be pushed to github. In doing so, the Skafos app will pick them up and run both the training and scoring jobs. 
+In step 7, you generated several changes to `common/data.py.` These changes now need to be pushed to github. In doing so, the Skafos app will pick them up and run both the training and scoring jobs. 
 
-### Step 8: Monitor your jobs
+### Step 9: Monitor your jobs
 
 Navigate to [dashboard.metismachine.io](https://dashboard.metismachine.io/) to monitor the status of the job you just pushed. Additional documentation about how to use the dashboard can be found [here](https://docs.metismachine.io/docs/dashboard)
 
