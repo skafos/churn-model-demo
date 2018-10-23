@@ -103,15 +103,21 @@ In step 7, you generated several changes to `common/data.py.` These changes now 
 
 ### Step 9: Monitor your jobs
 
-Navigate to [dashboard.metismachine.io](https://dashboard.metismachine.io/) to monitor the status of the job you just pushed. Additional documentation about how to use the dashboard can be found [here](https://docs.metismachine.io/docs/dashboard)
+Navigate to [dashboard.metismachine.io](https://dashboard.metismachine.io/) to monitor the status of the job you just pushed. Additional documentation about how to use the dashboard can be found [here](https://docs.metismachine.io/docs/dashboard).
 
-### Additional Steps to Document:
+### Step 10: Verify model and scores in S3
 
-* Checking status on S3 bucket.
-* Using API with Cassandra to grab results
-* Which pieces of code to modify to use alternate data. 
+Once your job has completed, you can verify that the predictive model itself (in the form of a `.pkl` file) and the scored users (in a `.csv` file) are in the private S3 bucket you specified in Step 7. 
 
+### Step 11: Access scores via API
 
+In addition to data that has been output to S3, this code uses the [Skafos SDK](https://docs.metismachine.io/docs/skafos-sdk) to store scored users in a [Cassandra](https://docs.metismachine.io/docs/skafos-sdk#section-using-cassandra) database. Specifically, the `save_scores` function, will write scored users to a table. 
+
+The scored users in Cassandra can be easily accessed via an API call. Navigating to the root project directory on the command line, type `skafos fetch --table model_scores`. This will return both a list of scores and a cURL command that can be incorporated into applications in the usual fashion to retrieve this data. 
+
+## Next Steps
+
+Now that you have successfully built a predictive model on Skafos and scored new data, you can adapt this code to build your own models.  
 
 
 
