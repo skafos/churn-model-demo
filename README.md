@@ -11,9 +11,9 @@ The purpose of this example is to highlight the utility of Skafos, Metis Machine
 
 ## Functional Architecture + Code
 
-The figure below provides a functional architecture, linking each piece to the code found in [churn-model-demo](https://github.com/skafos/churn-model-demo) on github.  
+The figure below provides a functional architecture for this process.
 
-TODO: Include functional architecture
+![Functional Architecture](functional-architecture.png)
 
 ## Pre-requisites
 
