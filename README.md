@@ -7,7 +7,7 @@ The purpose of this example is to highlight the utility of Skafos, Metis Machine
 * Build and train a model predicting cell phone churn with data on a public S3 bucket
 * Save this model to a private S3 bucket
 * Score new customers using this model and save these scores.
-* Access these scores via a generated API and S3. 
+* Access these scores via an API and S3. 
 
 ## Functional Architecture + Code
 
@@ -55,7 +55,7 @@ Open up this config file and edit the first job id to match the example .yml fil
 
 ``` yaml
 language: python
-name: build-churn model 
+name: build-churn-model 
 entrypoint: build-churn-model.py
 ```
 
