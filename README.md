@@ -35,10 +35,10 @@ In the following step-by-step guide, we will walk you through how to use the cod
 1. Run the existing code and access its output on S3.
 2. Replace the provided data and model with your own data and model. 
 
-### Step 1: Fork or clone the repo 
+### Step 1: Fork the repo 
 
-1. Clone the [churn-model-demo](https://github.com/skafos/churn-model-demo) from github. This code is freely available as part of the Skafos organization. Note that the README is a copy of these instructions. 
-2. Create your own remote on github for this repo, in the usual fashion, so you can push code changes.  
+1. [Fork](https://help.github.com/articles/fork-a-repo/) the [churn-model-demo](https://github.com/skafos/churn-model-demo) from github. This code is freely available as part of the Skafos organization. Note that the README is a copy of these instructions. 
+2. Clone the forked repo to your machine, and add an upstream remote to connect to the original repo, if desired.
 
 
 ### Step 2: Examine `metis.config.yml.example`
@@ -49,7 +49,7 @@ Creating your own `metis.config.yml` file is simple and described below.
 
 ### Step 3: Initialize your own Skafos project 
 
-Once in the working directory of this project, type: `skafos init` on the command line. This will generate a new `metis.config.yml` file that is tied to your Skafos account and organization. 
+Once in top level of the working directory of this project, type: `skafos init` on the command line. This will generate a new `metis.config.yml` file that is tied to your Skafos account and organization. 
 
 Open up this config file and edit the first job id to match the example .yml file included in the repo. Specifically, modify the following: 
 
@@ -71,7 +71,7 @@ This will output a job_id on the command line. Copy this job id to your `metis.c
 
 ``` yaml
 language: python 
-name: score-new-users`
+name: score-new-users
 entrypoint: score-new-users.py`
 dependencies: [<job-id for build-churn-model.py>]
 ```
