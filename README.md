@@ -5,7 +5,7 @@
 The purpose of this example is to highlight the utility of Skafos, Metis Machine's data science operationalization and delivery platform. In this example, we will: 
 
 * Build and train a model predicting cell phone churn with data on a public S3 bucket
-* Save this model to a private S3 bucket
+* Save this using the Skafos data engine
 * Score new customers using this model and save these scores.
 * Access these scores via an API and S3. 
 
@@ -17,10 +17,14 @@ The figure below provides a functional architecture for this process.
 
 ## Pre-requisites
 
-1. [Sign up](https://dashboard.metismachine.io/sign-up) for a Skafos account
+1. [Sign up](https://dashboard.metismachine.io/sign-up) for a Skafos account. _If you do not have a Skafos account, you will not be able to complete this tutorial._
 2. [Install skafos on your machine](https://docs.metismachine.io/docs/installation)
 3. Authenticate your account via the `skafos auth` command.
 4. A working knowledge of how to use git. 
+5. In this tutorial, we take advantage of Amazon S3 cloud storage. For information about how to use Amazon S3 buckets, please use the following documentation: 
+
+	* [Working with Amazon S3 buckets](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html) 
+	* [Creating AWS access keys](https://aws.amazon.com/premiumsupport/knowledge-center/create-access-key/)
 
 ## Input Data
 
@@ -37,57 +41,51 @@ In the following step-by-step guide, we will walk you through how to use the cod
 
 ### Step 1: Fork the repo 
 
-1. [Fork](https://help.github.com/articles/fork-a-repo/) the [churn-model-demo](https://github.com/skafos/churn-model-demo) from github. This code is freely available as part of the Skafos organization. Note that the README is a copy of these instructions. 
+1. [Fork](https://help.github.com/articles/fork-a-repo/) the [churn-model-demo](https://github.com/skafos/churn-model-demo) from Github. This code is freely available as part of the Skafos organization. Note that the README is a copy of these instructions. 
 2. Clone the forked repo to your machine, and add an upstream remote to connect to the original repo, if desired.
 
-
-### Step 2: Examine `metis.config.yml.example`
-
-Each Skafos project will need its own project token and unique `metis.config.yml` file. The example `metis.config.yml.example` provided in this repo is the identical to what you will need, but the project token and job ids are tied to another Skafos account and organization. 
-
-Creating your own `metis.config.yml` file is simple and described below. 
-
-### Step 3: Initialize your own Skafos project 
+### Step 2: Initialize your own Skafos project 
 
 Once in top level of the working directory of this project, type: `skafos init` on the command line. This will generate a new `metis.config.yml` file that is tied to your Skafos account and organization. 
 
-Open up this config file and edit the first job id to match the example .yml file included in the repo. Specifically, modify the following: 
+### Step 3: Edit the `metis.config.yml` file
+
+Open up this config file and edit the job name and entrypoint to match `metis.config.yml.example` included in the repo. Specifically, the name and entrypoint should look like this: 
 
 ``` yaml
-language: python
 name: build-churn-model 
-entrypoint: build-churn-model.py
+entrypoint: "build-churn-model.py"
 ```
 
 **Note: Do _not_ edit the project token or job_ids in the .yml file. Otherwise, Skafos will not recognize and run your job.** 
 
 ### Step 4: Add a second job to your Skafos project and `metis.config.yml`
 
-In the example `metis.config.yml` file, you'll not that there are two jobs: one to build a model, and one to score new users. You will need to add a second job to your Skafos project via the following command on the command line: 
+In `metis.config.yml.example`, you'll note that there are two jobs: one to build a model, and one to score new users. You will need to add a second job to your Skafos project via the following command on the command line: 
 
-` skafos create job score-new-users --project <insert-your-project-token-here>`
+`skafos create job score-new-users`
 
-This will output a job_id on the command line. Copy this job id to your `metis.config.yml` file, again using the example yaml file as a template, and including the following:
+This will output a job_id on the command line. Copy this job id to your `metis.config.yml` file, again using `metis.config.yml.example` as a template, and including the following:
 
 ``` yaml
 language: python 
 name: score-new-users
-entrypoint: score-new-users.py`
-dependencies: [<job-id for build-churn-model.py>]
+entrypoint: "score-new-users.py"
+dependencies: ["<job-id for build-churn-model.py>"]
 ```
 
-This dependency will ensure that new users are not scored until the churn model has been built. If `build-churn-model.py` does not complete, then `score-new-users.py` will not run. 
+This dependency will ensure that new users are not scored until the churn model has been built. If `build-churn-model.py` does not complete, then `score-new-users.py` will not run. Note the quotations that are necessary around the job id on the dependencies line.  
 
 ### Step 5: Add `metis.config.yml` to your repo
 
 Now that your `metis.config.yml` file has all the necessary components, add it to the repo, commit, and push.  
 
-### Step 6: Add Skafos to the github repo
-In Steps 3 and 4 above, you initialized a Skafos project so you can run the cloned repo in Skafos. Now, you will need to [add the Skafos app](https://github.com/apps/skafos) to your github repository. 
+### Step 6: Add Skafos to the Github repo
+In Steps 3 and 4 above, you initialized a Skafos project so you can run the cloned repo in Skafos. Now, you will need to [add the Skafos app](https://github.com/apps/skafos) to your Github repository. 
 
 To do this, navigate to the Settings page for your organization, click on _Installed GitHub Apps_ to add the Skafos app to this repository. Alternatively, if this repo is not part of an organization, navigate to your _Settings_ page, click on _Applications_, and install the Skafos app. 
 
-### Step 7: Modify the AWS Keys and Private S3 bucket
+### Step 7: Modify the AWS Keys and Private S3 Bucket
 
 In [`common/data.py`](https://github.com/skafos/churn-model-demo/blob/master/common/data.py), the AWS information to retrieve input data and store output models and data is provided. The input S3 bucket and file names do not need to be modified; however, the [location of the output models and scores](https://github.com/skafos/churn-model-demo/blob/master/common/data.py#L19) will need to be updated in the code, as well as the specified keyspace.
 
@@ -97,9 +95,9 @@ To make these changes, do the following:
 2. You will need to provide Skafos with your `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` [via the command line](https://docs.metismachine.io/docs/usage#section-setting-environment-variables). `skafos env AWS_ACCESS_KEY_ID --set <key>` and `skafos env AWS_SECRET_ACCESS_KEY --set <key>` will do this. 
 3. Update the [`KEYSPACE`](https://github.com/skafos/churn-model-demo/blob/master/common/data.py#L26) to be the `project_token` that was generated with the `metis.config.yml` file. 
 
-### Step 8: Commit and Push All Code Changes to the github repo
+### Step 8: Commit and Push All Code Changes to the Github Repo
 
-In step 7, you generated several changes to `common/data.py.` These changes now need to be pushed to github. In doing so, the Skafos app will pick them up and run both the training and scoring jobs. 
+In step 7, you generated several changes to `common/data.py.` These changes now need to be pushed to Github. In doing so, the Skafos app will pick them up and run both the training and scoring jobs. 
 
 ### Step 9: Monitor your jobs
 
