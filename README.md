@@ -4,8 +4,8 @@
 
 The purpose of this example is to highlight the utility of Skafos, Metis Machine's data science operationalization and delivery platform. In this example, we will: 
 
-* Build and train a model predicting cell phone churn with data on a public S3 bucket
-* Save this using the Skafos data engine
+* Build and train a model predicting cell phone [churn](http://www.businessdictionary.com/definition/churn.html) with data that is available on a public S3 bucket. 
+* Save this model using the Skafos data engine
 * Score new customers using this model and save these scores.
 * Access these scores via an API and S3. 
 
@@ -87,12 +87,28 @@ To do this, navigate to the Settings page for your organization, click on _Insta
 
 ### Step 7: Modify the AWS Keys and Private S3 Bucket
 
-In [`common/data.py`](https://github.com/skafos/churn-model-demo/blob/master/common/data.py), the AWS information to retrieve input data and store output models and data is provided. The input S3 bucket and file names do not need to be modified; however, the [location of the output models and scores](https://github.com/skafos/churn-model-demo/blob/master/common/data.py#L19) will need to be updated in the code, as well as the specified keyspace.
+In [`common/data.py`](https://github.com/skafos/churn-model-demo/blob/master/common/data.py), the following variables are defined to store the output data scores, model, and project token: 
 
-To make these changes, do the following: 
+``` python
+# Output models and scores
+S3_PRIVATE_BUCKET = "skafos.example.output.data"
+CHURN_MODEL_SCORES = "TelcoChurnData/churn_model_scores/scores.csv"
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
-1. Create a private S3 bucket to save your output models and scores. This bucket will replace the existing value for `S3_PRIVATE_BUCKET` in the code. 
-2. You will need to provide Skafos with your `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` [via the command line](https://docs.metismachine.io/docs/usage#section-setting-environment-variables). `skafos env AWS_ACCESS_KEY_ID --set <key>` and `skafos env AWS_SECRET_ACCESS_KEY --set <key>` will do this. 
+# Project Token
+KEYSPACE = "91633e3d419e23dc7a2da419"
+```
+
+**You will need to create your own private S3 bucket and AWS access keys** Amazon provides documentation for how do to this: 
+
+* [Create an AWS S3 bucket](https://docs.aws.amazon.com/quickstarts/latest/s3backup/step-1-create-bucket.html)
+* [AWS access keys](https://aws.amazon.com/premiumsupport/knowledge-center/create-access-key/)
+
+Once you have created these things do the following: 
+
+1. Replace `S3_PRIVATE_BUCKET` with the bucket you just created. 
+2. Provide Skafos with your `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` [via the command line](https://docs.metismachine.io/docs/usage#section-setting-environment-variables). `skafos env AWS_ACCESS_KEY_ID --set <key>` and `skafos env AWS_SECRET_ACCESS_KEY --set <key>` will do this. 
 3. Update the [`KEYSPACE`](https://github.com/skafos/churn-model-demo/blob/master/common/data.py#L26) to be the `project_token` that was generated with the `metis.config.yml` file. 
 
 ### Step 8: Commit and Push All Code Changes to the Github Repo
