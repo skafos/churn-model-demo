@@ -60,25 +60,6 @@ def save_scores(ska, scoring, location):
                 f.write(bytes_to_write)
         ska.log("Saving to S3", labels=["S3saving"], level=logging.INFO)
     
-            
-def save_model(ska, model_id, fittedModel, modelType):
-    ska.log("Saving model to S3", labels=["S3saving"], level=logging.INFO)
-    fileName = f"model_id_{model_id}_{modelType}.pkl"
-    filePath = f"s3://{S3_PRIVATE_BUCKET}/TelcoChurnData/churn_models/{fileName}"
-    print(f"{filePath}", flush=True)
-    fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
-    with fs.open(filePath, 'wb') as f:
-        f.write(pickle.dumps(fittedModel))
-
-def get_model(ska, model_id, modelType):
-    ska.log("Getting model from S3", labels=["S3fetching"], level=logging.INFO)
-    fileName = f"model_id_{model_id}_{modelType}.pkl"
-    filePath = f"s3://{S3_PRIVATE_BUCKET}/TelcoChurnData/churn_models/{fileName}"
-    print(f"{filePath}", flush=True)
-    fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
-    with fs.open(filePath, mode="rb") as f:
-        return pickle.loads(f.read())
-    
 
 #-------------------Data Manipulation Functions ----------------------- 
 
