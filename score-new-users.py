@@ -1,6 +1,7 @@
 from skafossdk import *
 import logging
 import random
+import pickle
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -21,11 +22,9 @@ csvCols = features.copy()
 csvCols.append(TARGET_VARIABLE) # Break into features, label, ID
 csvCols.insert(0, UNIQUE_ID)
 
-#Explicitly defined in modeling.py
-model_id = MODEL_ID
-
-# Grab model
-fittedModel = get_model(ska, model_id, MODEL_TYPE)
+# Get model that was previously saved in Cassandra using latest tag. 
+pickledModel = ska.engine.load_model(MODEL_TYPE, tag="latest").result()
+fittedModel = pickle.loads(pickledModel['data'])
 
 scoringData = get_data(csvCols, "scoring")
 xToScore = dummify_columns(scoringData[features], features)

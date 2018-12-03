@@ -5,4 +5,3 @@ TARGET_VARIABLE = 'churn'
 UNIQUE_ID = 'customer_id'
 MODEL_INPUT_FEATURES = ['internet_service', 'monthly_charges', 'tenure', 'dependents']
 MODEL_TYPE = "LogisticRegression" 
-MODEL_ID = 1 
