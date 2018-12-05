@@ -6,7 +6,7 @@ import pickle
 import logging
 from skafossdk import DataSourceType, Skafos
 from s3fs.core import S3FileSystem  
-from .schema import SCORING_SCHEMA
+from .schema import SCORING_SCHEMA, METRIC_SCHEMA
 
 
 # Data access functions
@@ -43,22 +43,27 @@ def get_data(csvCols, whichData):
             df = df[df[c].str.match(" ") == False]
     return df
 
-def save_scores(ska, scoring, location):
+def save_data(ska, data, SCHEMA, location):
     # Save to Cassandra
     if location=="both" or location=="cassandra":
-        #Convert scoring data to list of objects
-        scores = scoring.to_dict(orient='records')
+        if SCHEMA = SCORING_SCHEMA: 
+            #Convert scoring data to list of objects
+            dataToWrite = data.to_dict(orient='records')
+        if SCHEMA = METRIC_SCHEMA: 
+            dataToWrite = data
         #Save to Cassandra
         ska.log("Saving to Cassandra", level=logging.INFO)
-        ska.engine.save(SCORING_SCHEMA, scores).result()
+        ska.engine.save(SCHEMA, dataToWrite).result()
         ska.log("Saving to Cassandra", labels=["S3saving"], level=logging.INFO)   
     #Save to S3
     if location=="both" or location=="S3":
-        bytes_to_write = scoring.to_csv(None, index=False).encode()
-        fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
-        with fs.open(f"s3://{S3_PRIVATE_BUCKET}/{CHURN_MODEL_SCORES}", 'wb') as f:
-                f.write(bytes_to_write)
-        ska.log("Saving to S3", labels=["S3saving"], level=logging.INFO)
+        if SCHEMA == SCORING_SCHEMA: 
+            bytes_to_write = scoring.to_csv(None, index=False).encode()
+            fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
+            with fs.open(f"s3://{S3_PRIVATE_BUCKET}/{CHURN_MODEL_SCORES}", 'wb') as f:
+                    f.write(bytes_to_write)
+            ska.log("Saving to S3", labels=["S3saving"], level=logging.INFO)
+        # TODO: Handle for METRIC_SCHEMA
     
 
 #-------------------Data Manipulation Functions ----------------------- 
