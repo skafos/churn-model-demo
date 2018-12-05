@@ -27,6 +27,7 @@ csvCols.insert(0, UNIQUE_ID)
 # Get model that was previously saved in Cassandra using latest tag. 
 pickledModel = ska.engine.load_model(MODEL_TYPE, tag="latest").result()
 model_id = int(pickledModel['meta']['version'])
+ska.log(f"model id from unpickling: {model_id}", labels=["model id"])
 fittedModel = pickle.loads(pickledModel['data'])
 
 scoringData = get_data(csvCols, "scoring")
@@ -50,7 +51,7 @@ scoring['score'] = [p[1] for p in fittedModel.predict_proba(xToScore)]
 
 # Construct metric output to keep across runs
 metrics=[{'model_id': model_id, 
-          'run_time': datetime.datetime.now(),
+          'run_time': int(datetime.datetime.now().strftime("%s")) * 1000 ,
           'accuracy': model_accuracy,
           'pct_zeros': pctZeros,
           'pct_ones': pctOnes}]
