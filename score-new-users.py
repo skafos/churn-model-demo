@@ -25,7 +25,7 @@ csvCols.insert(0, UNIQUE_ID)
 
 # Get model that was previously saved in Cassandra using latest tag. 
 pickledModel = ska.engine.load_model(MODEL_TYPE, tag="latest").result()
-model_id = pickledModel['meta']['version']
+model_id = int(pickledModel['meta']['version'])
 fittedModel = pickle.loads(pickledModel['data'])
 
 scoringData = get_data(csvCols, "scoring")
@@ -59,4 +59,4 @@ metrics=[{'model_id': model_id,
 save_data(ska, scoring, SCORING_SCHEMA, "Cassandra")
 save_data(ska, metrics, METRIC_SCHEMA, "Cassandra")
 
-# Here is where we will re-import metrics for 
+# Here is where we will re-import metrics for scoring
