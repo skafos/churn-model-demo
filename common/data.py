@@ -45,16 +45,16 @@ def get_data(csvCols, whichData):
 
 def save_data(ska, data, SCHEMA, location):
     # Save to Cassandra
-    if location=="both" or location=="cassandra":
+    if location=="both" or location=="Cassandra":
         if SCHEMA == SCORING_SCHEMA: 
             #Convert scoring data to list of objects
             dataToWrite = data.to_dict(orient='records')
         if SCHEMA == METRIC_SCHEMA: 
             dataToWrite = data
+            ska.log("Executing for METRIC_SCHEMA", labels=["Cassandra"])
         #Save to Cassandra
         ska.log("Saving to Cassandra", level=logging.INFO)
         ska.engine.save(SCHEMA, dataToWrite).result()
-        ska.log("Saving to Cassandra", labels=["S3saving"], level=logging.INFO)   
     #Save to S3
     if location=="both" or location=="S3":
         if SCHEMA == SCORING_SCHEMA: 

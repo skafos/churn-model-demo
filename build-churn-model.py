@@ -42,7 +42,7 @@ yVar = df[TARGET_VARIABLE].apply(lambda x: 1 if x == "Yes" else 0)
 
    
 #train/test split. 
-X_train, X_test, y_train, y_test = train_test_split(xVars, yVar, random_state=43)
+X_train, X_test, y_train, y_test = train_test_split(xVars, yVar, random_state=10)
 
 #run logistic regression
 lr = LogisticRegression(C=0.5)
