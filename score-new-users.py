@@ -3,7 +3,7 @@ import logging
 import random
 import pickle
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, roc_auc_score
