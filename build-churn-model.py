@@ -45,7 +45,7 @@ yVar = df[TARGET_VARIABLE].apply(lambda x: 1 if x == "Yes" else 0)
 X_train, X_test, y_train, y_test = train_test_split(xVars, yVar, random_state=10)
 
 #run logistic regression
-lr = LogisticRegression(C=0.5)
+lr = LogisticRegression(C=1.0)
 fittedModel = lr.fit(X_train, y_train)
 
 y_preds = fittedModel.predict(X_test)
