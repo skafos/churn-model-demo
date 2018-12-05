@@ -46,10 +46,10 @@ def get_data(csvCols, whichData):
 def save_data(ska, data, SCHEMA, location):
     # Save to Cassandra
     if location=="both" or location=="cassandra":
-        if SCHEMA = SCORING_SCHEMA: 
+        if SCHEMA == SCORING_SCHEMA: 
             #Convert scoring data to list of objects
             dataToWrite = data.to_dict(orient='records')
-        if SCHEMA = METRIC_SCHEMA: 
+        if SCHEMA == METRIC_SCHEMA: 
             dataToWrite = data
         #Save to Cassandra
         ska.log("Saving to Cassandra", level=logging.INFO)
