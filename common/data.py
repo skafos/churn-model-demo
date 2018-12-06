@@ -58,7 +58,7 @@ def save_data(ska, data, SCHEMA, location):
     #Save to S3
     if location=="both" or location=="S3":
         if SCHEMA == SCORING_SCHEMA: 
-            bytes_to_write = dataToWrite.to_csv(None, index=False).encode()
+            bytes_to_write = data.to_csv(None, index=False).encode()
             fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
             with fs.open(f"s3://{S3_PRIVATE_BUCKET}/{CHURN_MODEL_SCORES}", 'wb') as f:
                     f.write(bytes_to_write)
