@@ -43,21 +43,21 @@ def get_data(csvCols, whichData):
             df = df[df[c].str.match(" ") == False]
     return df
 
-def save_data(ska, data, SCHEMA, location):
+def save_data(ska, data, schema, location):
     # Save to Cassandra
     if location=="both" or location=="Cassandra":
-        if SCHEMA == SCORING_SCHEMA: 
+        if schema == SCORING_SCHEMA:
             #Convert scoring data to list of objects
             dataToWrite = data.to_dict(orient='records')
-        if SCHEMA == METRIC_SCHEMA: 
+        if schema == METRIC_SCHEMA:
             dataToWrite = data
             ska.log("Executing for METRIC_SCHEMA", labels=["Cassandra"])
         #Save to Cassandra
         ska.log("Saving to Cassandra", level=logging.INFO)
-        ska.engine.save(SCHEMA, dataToWrite).result()
+        ska.engine.save(schema, dataToWrite).result()
     #Save to S3
     if location=="both" or location=="S3":
-        if SCHEMA == SCORING_SCHEMA: 
+        if schema == SCORING_SCHEMA:
             bytes_to_write = data.to_csv(None, index=False).encode()
             fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
             with fs.open(f"s3://{S3_PRIVATE_BUCKET}/{CHURN_MODEL_SCORES}", 'wb') as f:
@@ -81,9 +81,7 @@ def dummify_columns(xVars, features):
                 # Remove original non-numeric column
                 xVars = xVars.drop(column, axis=1)
             elif column == 'total_charges': #DIRTY HACK Continued + dealing with pandas wonky business
-                newDF = xVars['total_charges'].apply(pd.to_numeric)
-                xVars = xVars.drop('total_charges', axis=1)
-                xVars['total_charges'] = newDF
+                xVars['total_charges'] = xVars['total_charges'].apply(pd.to_numeric)
          
     return xVars     
 
