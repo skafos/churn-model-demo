@@ -58,7 +58,7 @@ metrics=[{'model_id': model_id,
 
 # Save scores and metrics to Cassandra
 # location options: Cassandra, S3, or both
-save_data(ska, scoring, SCORING_SCHEMA, "Cassandra")
+save_data(ska, scoring, SCORING_SCHEMA, "both")
 save_data(ska, metrics, METRIC_SCHEMA, "Cassandra")
 
 # Here is where we will re-import metrics for scoring
