@@ -11,6 +11,20 @@ SCORING_SCHEMA = {
         "score": "float"
     }
 }
+
+METRIC_SCHEMA = {
+    "table_name": "model_metrics",
+    "options": {
+        "primary_key": ["model_id"],
+    },
+    "columns": {
+        "model_id": "bigint",
+        "run_time": "timestamp",
+        "accuracy": "float",
+        "pct_zeros": "float", 
+        "pct_ones": "float"
+    }
+}
     
 
     

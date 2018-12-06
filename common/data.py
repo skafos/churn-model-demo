@@ -6,7 +6,7 @@ import pickle
 import logging
 from skafossdk import DataSourceType, Skafos
 from s3fs.core import S3FileSystem  
-from .schema import SCORING_SCHEMA
+from .schema import SCORING_SCHEMA, METRIC_SCHEMA
 
 
 # Data access functions
@@ -43,41 +43,27 @@ def get_data(csvCols, whichData):
             df = df[df[c].str.match(" ") == False]
     return df
 
-def save_scores(ska, scoring, location):
+def save_data(ska, data, schema, location):
     # Save to Cassandra
-    if location=="both" or location=="cassandra":
-        #Convert scoring data to list of objects
-        scores = scoring.to_dict(orient='records')
+    if location=="both" or location=="Cassandra":
+        if schema == SCORING_SCHEMA:
+            #Convert scoring data to list of objects
+            dataToWrite = data.to_dict(orient='records')
+        if schema == METRIC_SCHEMA:
+            dataToWrite = data
+            ska.log("Executing for METRIC_SCHEMA", labels=["Cassandra"])
         #Save to Cassandra
         ska.log("Saving to Cassandra", level=logging.INFO)
-        ska.engine.save(SCORING_SCHEMA, scores).result()
-        ska.log("Saving to Cassandra", labels=["S3saving"], level=logging.INFO)   
+        ska.engine.save(schema, dataToWrite).result()
     #Save to S3
     if location=="both" or location=="S3":
-        bytes_to_write = scoring.to_csv(None, index=False).encode()
-        fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
-        with fs.open(f"s3://{S3_PRIVATE_BUCKET}/{CHURN_MODEL_SCORES}", 'wb') as f:
-                f.write(bytes_to_write)
-        ska.log("Saving to S3", labels=["S3saving"], level=logging.INFO)
-    
-            
-def save_model(ska, model_id, fittedModel, modelType):
-    ska.log("Saving model to S3", labels=["S3saving"], level=logging.INFO)
-    fileName = f"model_id_{model_id}_{modelType}.pkl"
-    filePath = f"s3://{S3_PRIVATE_BUCKET}/TelcoChurnData/churn_models/{fileName}"
-    print(f"{filePath}", flush=True)
-    fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
-    with fs.open(filePath, 'wb') as f:
-        f.write(pickle.dumps(fittedModel))
-
-def get_model(ska, model_id, modelType):
-    ska.log("Getting model from S3", labels=["S3fetching"], level=logging.INFO)
-    fileName = f"model_id_{model_id}_{modelType}.pkl"
-    filePath = f"s3://{S3_PRIVATE_BUCKET}/TelcoChurnData/churn_models/{fileName}"
-    print(f"{filePath}", flush=True)
-    fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
-    with fs.open(filePath, mode="rb") as f:
-        return pickle.loads(f.read())
+        if schema == SCORING_SCHEMA:
+            bytes_to_write = data.to_csv(None, index=False).encode()
+            fs = S3FileSystem(key=AWS_ACCESS_KEY_ID, secret=AWS_SECRET_ACCESS_KEY)
+            with fs.open(f"s3://{S3_PRIVATE_BUCKET}/{CHURN_MODEL_SCORES}", 'wb') as f:
+                    f.write(bytes_to_write)
+            ska.log("Saving to S3", labels=["S3saving"], level=logging.INFO)
+        # TODO: Handle for METRIC_SCHEMA
     
 
 #-------------------Data Manipulation Functions ----------------------- 
@@ -95,9 +81,7 @@ def dummify_columns(xVars, features):
                 # Remove original non-numeric column
                 xVars = xVars.drop(column, axis=1)
             elif column == 'total_charges': #DIRTY HACK Continued + dealing with pandas wonky business
-                newDF = xVars['total_charges'].apply(pd.to_numeric)
-                xVars = xVars.drop('total_charges', axis=1)
-                xVars['total_charges'] = newDF
+                xVars['total_charges'] = xVars['total_charges'].apply(pd.to_numeric)
          
     return xVars     
 
