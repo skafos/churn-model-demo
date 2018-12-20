@@ -64,6 +64,19 @@ def save_data(ska, data, schema, location):
                     f.write(bytes_to_write)
             ska.log("Saving to S3", labels=["S3saving"], level=logging.INFO)
         # TODO: Handle for METRIC_SCHEMA
+        
+# Access metrics from Cassandra for plotting
+def get_metrics(ska):
+    view = "model_metrics"
+    table_options = {
+            "table": "model_metrics"
+            }
+    data_source = DataSourceType.Cassandra
+    cv = ska.engine.create_view(view, table_options, data_source).result()
+    print(f"ska.engine.create_view: {cv}\n", flush=True)
+    rows = ska.engine.query(f"SELECT * FROM model_metrics").result().get('data')
+    metric_df = pd.DataFrame(data=rows)
+    return metric_df
     
 
 #-------------------Data Manipulation Functions ----------------------- 

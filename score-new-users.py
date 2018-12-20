@@ -62,3 +62,8 @@ save_data(ska, scoring, SCORING_SCHEMA, "both")
 save_data(ska, metrics, METRIC_SCHEMA, "Cassandra")
 
 # Here is where we will re-import metrics for scoring
+metrics_df = get_metrics(ska)
+metrics_sorted = metrics_df.sort_values(by=['model_id'])
+metrics_reindex = metrics_sorted.reset_index()
+for index, row in metrics_reindex.iterrows():
+    ska.report('Percent of customers predicted to churn', y=100*row['pct_ones'], x=index, x_label='Model index', y_label='Percent Churn')
