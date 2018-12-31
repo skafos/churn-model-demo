@@ -13,7 +13,7 @@ from common.data import *
 from common.modeling import *
 from common.schema import *
 
-
+# Initialize Skafos object
 ska = Skafos()
 
 #Grab relevant features from those selected in the modeling.py file. 
@@ -24,13 +24,16 @@ csvCols = features.copy()
 csvCols.append(TARGET_VARIABLE) # Break into features, label, ID
 csvCols.insert(0, UNIQUE_ID)
 
-# Get model that was previously saved in Cassandra using latest tag. 
+# Get model for scoring that was previously saved in Cassandra using latest tag. 
 pickledModel = ska.engine.load_model(MODEL_TYPE, tag="latest").result()
 model_id = int(pickledModel['meta']['version'])
 ska.log(f"model id from unpickling: {model_id}", labels=["model id"])
 fittedModel = pickle.loads(pickledModel['data'])
 
+# Get data for new users from S3 Bucket
 scoringData = get_data(csvCols, "scoring")
+
+# Split X and Y variables and convert categorial to dummy variables
 xToScore = dummify_columns(scoringData[features], features)
 y_actual = scoringData[TARGET_VARIABLE].apply(lambda x: 1 if x == "Yes" else 0)
 
@@ -40,9 +43,6 @@ pctOnes = np.sum(preds)/len(preds)
 pctZeros = 1 - pctOnes
 scores = [p[1] for p in fittedModel.predict_proba(xToScore)]
 model_accuracy = accuracy_score(y_actual.values, preds)
-model_auc = roc_auc_score(y_actual.values, scores)
-ska.log(f"Scoring accuracy: {model_accuracy} \n ROC_AUC: {model_auc}", 
-        labels=["Metrics"], level=logging.INFO)
 
 #Construct scoring output
 scoring = pd.DataFrame(data=scoringData[UNIQUE_ID], columns=[UNIQUE_ID])
